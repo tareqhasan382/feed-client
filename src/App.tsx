@@ -1,17 +1,30 @@
-import { useState } from 'react';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Feed from './pages/Feed';
+import { Suspense, lazy } from 'react';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const Feed = lazy(() => import('./pages/Feed'));
+
+function PageLoader() {
+  return (
+    <div className="container py-5 text-center">
+      <p>Loading...</p>
+    </div>
+  );
+}
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('login');
-
   return (
-    <div>
-      {currentPage === 'login' && <Login onNavigate={setCurrentPage} />}
-      {currentPage === 'register' && <Register onNavigate={setCurrentPage} />}
-      {currentPage === 'feed' && <Feed />}
-    </div>
+    <BrowserRouter>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/feed" element={<Feed />} />
+        </Routes>
+      </Suspense>
+    </BrowserRouter>
   );
 }
 
