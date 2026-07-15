@@ -1,208 +1,147 @@
+<div align="center">
+
 # Social Feed Frontend
 
-Frontend application for the **Full Stack Engineer Assessment**.
+A modern, production-ready social feed UI built with React 18, TypeScript, Redux Toolkit, and RTK Query.
 
-Built with **React.js**, **TypeScript**, **Vite**, **Tailwind CSS**, and **React Router DOM**.
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)](https://react.dev)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript)](https://www.typescriptlang.org)
+[![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite)](https://vitejs.dev)
+[![Redux Toolkit](https://img.shields.io/badge/Redux_Toolkit-2.12-764ABC?logo=redux)](https://redux-toolkit.js.org)
+[![License](https://img.shields.io/badge/License-UNLICENSED-lightgrey)](#)
+
+</div>
 
 ---
+
+## Overview
+
+A complete social feed frontend with authentication, infinite scroll, cursor-based pagination, optimistic updates, and a responsive three-column layout. The app communicates with a [NestJS backend API](../backend/README.md) via a custom Axios instance with automatic token refresh.
 
 ## Tech Stack
 
-- React.js
-- TypeScript
-- Vite
-- Tailwind CSS
-- React Router DOM
-- Axios
-- React Hook Form
-- Zod
-
----
+| Layer | Technology |
+|-------|-----------|
+| UI Library | React 18 (Concurrent) |
+| Language | TypeScript 5.7 (strict mode) |
+| Build Tool | Vite 5 |
+| State Management | Redux Toolkit |
+| Data Fetching | RTK Query (with custom Axios base query) |
+| HTTP Client | Axios 1.18 (with interceptor-based token refresh) |
+| Forms | React Hook Form + Zod 4 |
+| Routing | React Router DOM 7 |
+| Notifications | React Hot Toast |
+| Styling | Bootstrap CSS + Custom CSS |
+| Fonts | Google Fonts (Poppins) |
 
 ## Features
 
 ### Authentication
+- Login / Registration with Zod schema validation
+- JWT access + refresh token management via localStorage
+- Automatic token refresh with request queue (no lost requests during refresh)
+- Route guards for protected/public routes
+- Persistent login on page reload (auto-fetch user on mount)
 
-- User Login
-- User Registration
-- Protected Routes
-- JWT Authentication
-- Persistent Login
+### Social Feed
+- **Create Post**: Rich form with content, visibility toggle (Public/Private), and optional image upload (multipart FormData)
+- **Infinite Scroll**: IntersectionObserver-based sentinel with smart scroll parent detection
+- **Cursor Pagination**: Stable cursor-based pagination (10 posts per page) with merge-based cache updates
+- **Optimistic Updates**: Create, edit, delete, and like/unlike all update the UI instantly with rollback on failure
 
----
+### Posts
+- Full CRUD: Create, Read, Edit, Delete posts
+- Image upload with preview, remove, and Cloudinary integration
+- Owner-only Edit/Delete via dropdown menu
+- Visibility badges (Public/Private)
+- Time-ago formatting (just now, 5m, 3h, 2d, 1w)
 
-### Feed
+### Likes
+- Toggle like/unlike on posts with optimistic state flip
+- Toggle like/unlike on comments and replies (unified mutation)
+- Like count display with visual thumbs-up icon (filled blue when liked)
+- Likers modal with infinite scroll list of users who liked a post
 
-- View Public Posts
-- Create Post
-- Upload Image
-- Private/Public Post Visibility
-- Like / Unlike Posts
-- Comment on Posts
-- Reply to Comments
-- Like / Unlike Comments
-- Like / Unlike Replies
-- View Users Who Liked Posts
-- View Users Who Liked Comments
-- View Users Who Liked Replies
+### Comments & Replies
+- Two-level comment system (comments on posts, replies on comments)
+- Infinite scroll for both comments and replies
+- Create comment / reply forms with Enter-to-submit
+- Like button on each comment and reply
+- "View N replies" expandable section
 
----
+### Responsive Layout
+- **Desktop**: Three-column layout (left sidebar, feed center, right sidebar)
+- **Mobile**: Full-width feed with bottom navigation bar
+- Lazy-loaded route-level code splitting via `React.lazy` + `Suspense`
 
-## UI Requirements
 
-This project strictly follows the provided HTML/CSS design.
 
-- No alternative UI
-- Pixel-perfect implementation
-- Fully Responsive
-- Mobile Friendly
-- Tablet Friendly
-- Desktop Friendly
-
----
-
-## Routing
-
-| Route | Access |
-|--------|--------|
-| /login | Public |
-| /register | Public |
-| /feed | Protected |
-
----
-
-## Performance
-
-- Lazy Loading
-- Route Code Splitting
-- Image Lazy Loading
-- API Request Caching
-- Optimized Rendering
-- Memoization where appropriate
-
----
-
-## Validation
-
-Frontend validation is implemented using:
-
-- React Hook Form
-- Zod
-
-Validation is performed before every API request.
-
----
-
-## Error Handling
-
-The application provides:
-
-- Friendly error messages
-- Loading states
-- Empty states
-- Network error handling
-- Disabled submit buttons while processing
-
----
-
-## Security
-
-- JWT Authentication
-- Protected Routes
-- Token-based Authorization
-- Secure API Requests
-
----
-
-## Responsive Design
-
-Optimized for:
-
-- Mobile
-- Tablet
-- Desktop
-
----
-
-## Installation
+Create a `.env` file in the project root:
 
 ```bash
-git clone <repository-url>
-
-cd social-feed-web
-
-npm install
+VITE_API_BASE_URL=http://localhost:3005/api/v1
 ```
 
----
-
-## Environment Variables
-
-Create a `.env` file.
-
-```
-VITE_API_BASE_URL=http://localhost:5000/api
-```
-
----
-
-## Run Development Server
+### Development
 
 ```bash
 npm run dev
 ```
 
----
+The Vite dev server runs on `http://localhost:5173` and proxies `/api` requests to the backend at `http://localhost:3000`.
 
-## Build
+### Production Build
 
 ```bash
 npm run build
-```
-
----
-
-## Preview
-
-```bash
 npm run preview
 ```
 
----
+### Scripts
 
-## Design Notes
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start Vite dev server with HMR |
+| `npm run build` | Type-check with `tsc -b` then build with Vite |
+| `npm run lint` | Run ESLint (zero warnings policy) |
+| `npm run preview` | Preview production build locally |
 
-The UI implementation follows the provided assessment design.
+## Routes
 
-No visual redesign has been introduced.
+| Path | Component | Auth | Description |
+|------|-----------|------|-------------|
+| `/` | Redirect | — | Redirects to `/login` |
+| `/login` | Login | Public | Login page |
+| `/register` | Register | Public | Registration page |
+| `/feed` | Feed | Protected | Main social feed |
 
-Only responsiveness and code organization have been improved while preserving the original layout.
+All routes are lazy-loaded via `React.lazy()` with a `Suspense` fallback.
 
----
+## Project Structure
 
-## Code Quality
+```
+frontend/
+├── public/
+│   ├── css/                        # Bootstrap + custom CSS
+│   ├── images/                     # Static images
+│   └── js/                         # Bootstrap JS
+├── src/
+│   ├── main.tsx                    # Entry point
+│   ├── App.tsx                     # Router + lazy routes
+│   ├── app/                        # Redux store
+│   ├── features/                   # Feature modules (auth, posts, comments, likes)
+│   ├── shared/                     # Shared API, types, utils, components
+│   ├── hooks/                      # Custom hooks
+│   ├── utils/                      # Utility functions
+│   ├── components/                 # UI components (feed, comments, shared)
+│   └── pages/                      # Page components
+├── index.html
+├── vite.config.ts
+├── tsconfig.json
+├── package.json
+└── .env
+```
 
-- TypeScript
-- Reusable Components
-- Custom Hooks
-- Clean Folder Structure
-- Route-based Code Splitting
-- DRY Principle
-- Maintainable Code
+## License
 
----
-
-## Future Improvements
-
-- Dark Mode
-- Infinite Scrolling
-- Optimistic UI Updates
-- Accessibility Enhancements
-
----
-
-## Author
-
-**Tareq Hasan**
-
-Full Stack Developer
+UNLICENSED

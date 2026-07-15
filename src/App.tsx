@@ -14,7 +14,7 @@ function PageLoader() {
   );
 }
 
-function App() {
+function App() { 
   return (
     <BrowserRouter>
       <Suspense fallback={<PageLoader />}>
