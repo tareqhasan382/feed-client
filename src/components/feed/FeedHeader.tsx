@@ -1,12 +1,15 @@
 import { Link } from 'react-router-dom';
 import NotificationsDropdown from './NotificationsDropdown';
 import ProfileDropdown from './ProfileDropdown';
+import type { User } from '../../features/auth/authTypes';
 
 interface FeedHeaderProps {
   showNotifications: boolean;
   showProfileDropdown: boolean;
   onToggleNotifications: () => void;
   onToggleProfileDropdown: () => void;
+  onLogout?: () => void;
+  user?: User | null;
 }
 
 const FeedHeader = ({
@@ -14,6 +17,8 @@ const FeedHeader = ({
   showProfileDropdown,
   onToggleNotifications,
   onToggleProfileDropdown,
+  onLogout,
+  user,
 }: FeedHeaderProps) => (
   <nav className="navbar navbar-expand-lg navbar-light _header_nav _padd_t10">
     <div className="container _custom_container">
@@ -79,17 +84,17 @@ const FeedHeader = ({
         </ul>
         <div className="_header_nav_profile">
           <div className="_header_nav_profile_image">
-            <img src="/images/profile.png" alt="Image" className="_nav_profile_img" />
+            <img src={user?.avatar || '/images/profile.png'} alt="Image" className="_nav_profile_img" />
           </div>
           <div className="_header_nav_dropdown">
-            <p className="_header_nav_para">Dylan Field</p>
+            <p className="_header_nav_para">{user ? `${user.firstName} ${user.lastName}` : ''}</p>
             <button id="_profile_drop_show_btn" className="_header_nav_dropdown_btn _dropdown_toggle" type="button" onClick={onToggleProfileDropdown}>
               <svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" fill="none" viewBox="0 0 10 6">
                 <path fill="#112032" d="M5 5l.354.354L5 5.707l-.354-.353L5 5zm4.354-3.646l-4 4-.708-.708 4-4 .708.708zm-4.708 4l-4-4 .708-.708 4 4-.708.708z" />
               </svg>
             </button>
           </div>
-          <ProfileDropdown isOpen={showProfileDropdown} />
+          <ProfileDropdown isOpen={showProfileDropdown} onLogout={onLogout} user={user} />
         </div>
       </div>
     </div>

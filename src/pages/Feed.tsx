@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import FeedCreatePost from '../components/feed/FeedCreatePost';
+import { useNavigate } from 'react-router-dom';
 import FeedHeader from '../components/feed/FeedHeader';
 import FeedLeftSidebar from '../components/feed/FeedLeftSidebar';
 import FeedMobileBottomNav from '../components/feed/FeedMobileBottomNav';
@@ -7,14 +7,21 @@ import FeedMobileHeader from '../components/feed/FeedMobileHeader';
 import FeedRightSidebar from '../components/feed/FeedRightSidebar';
 import FeedStoriesDesktop from '../components/feed/FeedStoriesDesktop';
 import FeedStoriesMobile from '../components/feed/FeedStoriesMobile';
-import FeedTimelinePost from '../components/feed/FeedTimelinePost';
+import FeedList from '../components/feed/FeedList';
 import ModeSwitchButton from '../components/feed/ModeSwitchButton';
+import { useAuth } from '../hooks/useAuth';
 
 const Feed = () => {
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [openTimelineDropdown, setOpenTimelineDropdown] = useState<number | null>(0);
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login', { replace: true });
+  };
 
   const layoutClassName = `_layout _layout_main_wrapper${isDarkMode ? ' _dark_wrapper' : ''}`;
 
@@ -33,6 +40,8 @@ const Feed = () => {
             setShowProfileDropdown((prev) => !prev);
             setShowNotifications(false);
           }}
+          onLogout={handleLogout}
+          user={user}
         />
         <FeedMobileHeader />
         <FeedMobileBottomNav />
@@ -47,18 +56,7 @@ const Feed = () => {
                   <div className="_layout_middle_inner">
                     <FeedStoriesDesktop />
                     <FeedStoriesMobile />
-                    <FeedCreatePost />
-                    <FeedTimelinePost
-                      postIndex={1}
-                      showDropdown={openTimelineDropdown === 0}
-                      onToggleDropdown={() => setOpenTimelineDropdown((prev) => (prev === 0 ? null : 0))}
-                      commentLink
-                    />
-                    <FeedTimelinePost
-                      postIndex={2}
-                      showDropdown={openTimelineDropdown === 1}
-                      onToggleDropdown={() => setOpenTimelineDropdown((prev) => (prev === 1 ? null : 1))}
-                    />
+                    <FeedList />
                   </div>
                 </div>
               </div>

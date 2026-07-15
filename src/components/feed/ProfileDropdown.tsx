@@ -1,15 +1,19 @@
+import type { User } from '../../features/auth/authTypes';
+
 interface ProfileDropdownProps {
   isOpen: boolean;
+  onLogout?: () => void;
+  user?: User | null;
 }
 
-const ProfileDropdown = ({ isOpen }: ProfileDropdownProps) => (
+const ProfileDropdown = ({ isOpen, onLogout, user }: ProfileDropdownProps) => (
   <div id="_prfoile_drop" className={`_nav_profile_dropdown _profile_dropdown${isOpen ? ' show' : ''}`}>
     <div className="_nav_profile_dropdown_info">
       <div className="_nav_profile_dropdown_image">
-        <img src="/images/profile.png" alt="Image" className="_nav_drop_img" />
+        <img src={user?.avatar || '/images/profile.png'} alt="Image" className="_nav_drop_img" />
       </div>
       <div className="_nav_profile_dropdown_info_txt">
-        <h4 className="_nav_dropdown_title">Dylan Field</h4>
+        <h4 className="_nav_dropdown_title">{user ? `${user.firstName} ${user.lastName}` : ''}</h4>
         <a href="#0" className="_nav_drop_profile">
           View Profile
         </a>
@@ -64,7 +68,7 @@ const ProfileDropdown = ({ isOpen }: ProfileDropdownProps) => (
         </a>
       </li>
       <li className="_nav_dropdown_list_item">
-        <a href="#0" className="_nav_dropdown_link">
+        <a href="#0" className="_nav_dropdown_link" onClick={(e) => { e.preventDefault(); onLogout?.(); }}>
           <div className="_nav_drop_info">
             <span>
               <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 19 19">
@@ -79,7 +83,7 @@ const ProfileDropdown = ({ isOpen }: ProfileDropdownProps) => (
             </span>
             Log Out
           </div>
-          <button type="submit" className="_nav_drop_btn_link">
+          <button type="button" className="_nav_drop_btn_link">
             <svg xmlns="http://www.w3.org/2000/svg" width="6" height="10" fill="none" viewBox="0 0 6 10">
               <path
                 fill="#112032"
